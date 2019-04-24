@@ -1,4 +1,4 @@
-# iast
+# IAST
 Ideal Adsorbed Solution Theory
 
 Python code for computing adsorption equilibrium of mixtures in porous materials.
