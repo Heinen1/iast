@@ -12,9 +12,9 @@ git clone https://github.com/Heinen1/iast.git
 Usage
 =====
 ```
-python iast.py
+python main.py
 ```
 
-Inside iast.py you can change the Langmuir isotherm parameters.
+Inside main.py you can change the Langmuir isotherm parameters.
 
 
