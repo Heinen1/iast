@@ -18,7 +18,7 @@ def iast(P,S):
 	x[0] = f
 	x[1] = 1 - x[0]
 	
-	q = langmuir(P*(S.y[:]/x[:]),S.params)
+	q = langmuir(P*(S.y/x),S.params)
 
 	qtot = 1.0/np.sum(x/q) 
 	q_mix = qtot * x
