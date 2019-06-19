@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.9.23)  30 APR 2019 14:34
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.9.23)  19 JUN 2019 15:10
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**iast
+**iast.tex
 (./iast.tex
 LaTeX2e <2014/05/01>
 Babel <3.9k> and hyphenation patterns for 78 languages loaded.
@@ -344,9 +344,6 @@ hane_ethane_433K.pdf): PDF inclusion: multiple pdfs with page group included in
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
  ) 
 Here is how much of TeX's memory you used:
  5307 strings out of 493117
@@ -355,7 +352,7 @@ Here is how much of TeX's memory you used:
  8705 multiletter control sequences out of 15000+600000
  34387 words of font info for 33 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,12n,40p,676b,1311s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,12n,40p,680b,1311s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/tex-gyre/q-rm.enc}</usr/l
 ocal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/lo
 cal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/loc
@@ -370,7 +367,7 @@ e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2
 exmf-dist/fonts/type1/public/tex-gyre/qbkb.pfb></usr/local/texlive/2014/texmf-d
 ist/fonts/type1/public/tex-gyre/qbkr.pfb></usr/local/texlive/2014/texmf-dist/fo
 nts/type1/public/tex-gyre/qbkri.pfb>
-Output written on iast.pdf (3 pages, 217423 bytes).
+Output written on iast.pdf (3 pages, 219652 bytes).
 PDF statistics:
  144 PDF objects out of 1000 (max. 8388607)
  99 compressed objects within 1 object stream

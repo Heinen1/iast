@@ -21,7 +21,7 @@ xleftmargin=2em}
 \begin{document}
 
 \begin{center}
-{\Large Numpy code for calculation multi-component adsorption isotherms using ideal adsorbed solution theory}
+{\Large Numpy code for calculating multi-component adsorption isotherms using ideal adsorbed solution theory}
 \end{center}
 \section{Computer code}
 
@@ -36,13 +36,13 @@ The spreading pressure $\pi$ can be thought of as the negative of the surface te
 	\label{eq:spreading_pressure}
 \end{equation}
 %
-with $A$ the surface area of the sorbent, $R$ the gas constant, $T$ the temperature, $P_i^0$ the partial pressure for component $i$ at the spreading pressure, $q_i$ the single component $i$ adsorption isotherm and and $P_i$ the component pressure of the bulk phase. Here, $q_i$ is fitted to a Langmuir isotherm $q_i = q_\text{sat,i}b_iP/(1+b_iP)$. Integrating equation (\ref{eq:spreading_pressure}) analytically gives
+with $A$ the surface area of the sorbent, $R$ the gas constant, $T$ the temperature, $P_i^0$ the partial pressure for component $i$ at the spreading pressure, $q_i$ the single component $i$ adsorption isotherm and $P_i$ the component pressure of the bulk phase. The fugacity coefficient is set to one. Here, $q_i$ is fitted to a Langmuir isotherm $q_i = q_\text{sat,i}b_iP/(1+b_iP)$. Integrating equation (\ref{eq:spreading_pressure}) analytically gives
 %
 \begin{equation}
 	\int_0^{P_i^0}\frac{q_i}{P} {\dif P} =  q_\text{sat,i}\ln\Big({1+b_iP_i^0}\Big). 
 \end{equation}
 %
-At equilibrium, the spreading pressures of all components are equivalent. Therefore, for a two-component system the following relation holds 
+For arbitrary defined isotherm models, it might be neccesary to perform the integration numerically. At equilibrium, the spreading pressures of all components are equivalent. Therefore, for a two-component system the following relation holds 
 %
 \begin{equation} 
 	q_\text{sat,1}\ln{\Big(1+b_1\frac{Py_1}{x_1}\Big)} - q_\text{sat,2}\ln{\Big(1+b_2\frac{Py_2}{1-x_1}\Big)} = 0
@@ -72,14 +72,14 @@ x[0] = f
 x[1] = 1 - x[0]
 \end{lstlisting}
 
-The scipy function fsolve() returns the root of the function iast\_langmuir\_analytical(). This root is $x_1$ and for a two-component mixture $x_2 = 1 - x_1$. Next, the total adsorption capacity $q_T$ is obtained from
+The scipy function $fsolve()$ returns the root of the function $iast\_langmuir\_analytical()$. This root is $x_1$ and for a two-component mixture $x_2 = 1 - x_1$. Next, the total adsorption capacity $q_T$ is obtained from
 %
 \begin{equation}
         \frac{1}{q_T} = \sum_{i}^N\frac{x_i}{q_i(P_i^0)}
 	\label{eq:total_adsorbed_loading}
 \end{equation}
 %
-with $q_i={x_i}q_T$. Here, $q_i$ (not $q_i(P_i^0$) is the actual adsorbed amount of component $i$ in the mixture. In the code, it is given as follows: 
+with $q_i={x_i}q_T$. Here, $q_i$ (not $q_i(P_i^0)$) is the actual adsorbed amount of component $i$ in the mixture. In the code, it is given as follows: 
 %
 \begin{lstlisting}[caption={Compute the mixture adsorption isotherms based on equation (\ref{eq:total_adsorbed_loading}).}]
 q = langmuir(P*(S.y/x),S.params)
