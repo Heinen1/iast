@@ -12,9 +12,9 @@ git clone https://github.com/Heinen1/iast.git
 Usage
 =====
 ```
-python main.py
+python main.py [isotherm type] [file name 1] [file name 2]
 ```
+[isotherm type]: 0 = langmuir
 
-Inside main.py you can change the Langmuir isotherm parameters.
 
 
