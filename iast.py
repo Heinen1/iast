@@ -13,7 +13,7 @@ def iast(P,S):
 	x0 = np.where(S.y[0]<0.00001 and S.y[1]<0.00001,0,quess)
 	data = [P,S.y,S.isothermParameters]
 
-	f = fsolve(iast_langmuir_analytical,x0,args=data)
+	f = fsolve(iastLangmuirAnalytical,x0,args=data)
 
 	x[0] = f
 	x[1] = 1 - x[0]
@@ -25,7 +25,7 @@ def iast(P,S):
 
 	return q_mix
 
-def iast_langmuir_analytical(x,data):
+def iastLangmuirAnalytical(x,data):
 	P,y,isotherm = data[0], data[1], data[2]
 	isotherm1 = isotherm[0]
 	isotherm2 = isotherm[1]
