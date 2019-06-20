@@ -5,44 +5,51 @@ from isotherms import *
 from scipy.optimize import curve_fit
 import matplotlib.pyplot as plt
 
-col_pressure = 1
-col_loading = 8
-skip_number_of_lines = 22
-number_of_adsorbates = 2
+columnPressure = 1
+columnLoading = 8
+skipNumberOfLines = 22
 number_of_isotherm_parameters = 2
 
-def fitIsothermModels(arguments):
-	print("Isotherm model: ",isotherm_models[int(arguments[1])])
-	Ncomponents = len(arguments)-2
-	coefficients = np.zeros([Ncomponents,number_of_isotherm_parameters])
-	pressure_loading_1 = storeDataPoints(arguments[2])
-	pressure_loading_2 = storeDataPoints(arguments[3])
+def fitIsothermModels(isothermType,nComponents,fileName1,fileName2):
+	coefficients = np.zeros([nComponents,number_of_isotherm_parameters])
+
+	checkIfFileExists(fileName1)
+	checkIfFileExists(fileName2)
+
+	pressure_loading_1 = storeDataPoints(fileName1)
+	pressure_loading_2 = storeDataPoints(fileName2)
+
 	coefficients[0] = fitIsotherm(pressure_loading_1)
 	coefficients[1] = fitIsotherm(pressure_loading_2)
 	return coefficients
 
-def storeDataPoints(file_name):
-	i=0
-	pressure_loading = list()        
-	with open (file_name, "r") as myfile:
-		for line in myfile:
-			if i > skip_number_of_lines:
-				line_strip = line.strip()
-				line_split = line_strip.split()
-				line_segments = [line_split[col_pressure-1], line_split[col_loading-1]]
-				pressure_loading.append(line_segments) 
-			i = i + 1
-	return pressure_loading 
+def checkIfFileExists(fileName):
+	file_exists = os.path.isfile(fileName)
+	if file_exists == False:
+		print("File ",fileName," does not exist")
+		exit()
 
-def fitIsotherm(pressure_loading):
-	n = len(pressure_loading)
-	p = np.zeros(n) 
-	q = np.zeros(n) 
+def storeDataPoints(fileName):
+	i=0
+	pressureLoading = list()        
+	with open (fileName, "r") as myfile:
+		for line in myfile:
+			if i > skipNumberOfLines:
+				lineStrip = line.strip()
+				lineSplit = lineStrip.split()
+				lineSegments = [lineSplit[columnPressure-1], lineSplit[columnLoading-1]]
+				pressureLoading.append(lineSegments) 
+			i = i + 1
+	return pressureLoading 
+
+def fitIsotherm(pressureLoading):
+	n = len(pressureLoading)
+	pressure = np.zeros(n) 
+	loading = np.zeros(n) 
 	for i in range(n):
-		p[i] = pressure_loading[i][0] 
-		q[i] = pressure_loading[i][1] 
-	# Initial guess values Langmuir isotherm: qsat = loading last point, b = Henry coefficient loading / pressure in low pressure regime
-	init_values = [q[n-1], q[1]/p[1]]
-	popt, pcov = curve_fit(langmuir_fit, p, q, p0=init_values)
+		pressure[i] = pressureLoading[i][0] 
+		loading[i] = pressureLoading[i][1] 
+	init_values = [loading[n-1], loading[1]/pressure[1]]
+	popt, pcov = curve_fit(langmuirFit, pressure, loading, p0=init_values)
 	return popt
 

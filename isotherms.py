@@ -9,5 +9,5 @@ def langmuir(p,params):
 		langmuir[i] = params[i][0]*params[i][1]*p[i]/(1+(params[i][1]*p[i]))
 	return langmuir 
 
-def langmuir_fit(x,qsat,b):
+def langmuirFit(x,qsat,b):
 	return qsat*x*b/(1+b*x)

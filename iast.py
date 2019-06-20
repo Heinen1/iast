@@ -3,22 +3,22 @@ from scipy.optimize import fsolve
 from isotherms import *
 
 def iast(P,S):
-	q_guess = np.zeros(S.Ncomponents)
-	q = np.zeros(S.Ncomponents)
-	x = np.zeros(S.Ncomponents)
+	q_guess = np.zeros(S.nComponents)
+	q = np.zeros(S.nComponents)
+	x = np.zeros(S.nComponents)
 
-	q_guess = langmuir(P*S.y,S.params)
+	q_guess = langmuir(P*S.y,S.isothermParameters)
 	quess = q_guess[0]/(np.sum(q_guess))
 
 	x0 = np.where(S.y[0]<0.00001 and S.y[1]<0.00001,0,quess)
-	data = [P,S.y,S.params]
+	data = [P,S.y,S.isothermParameters]
 
 	f = fsolve(iast_langmuir_analytical,x0,args=data)
 
 	x[0] = f
 	x[1] = 1 - x[0]
 	
-	q = langmuir(P*(S.y/x),S.params)
+	q = langmuir(P*(S.y/x),S.isothermParameters)
 
 	qtot = 1.0/np.sum(x/q) 
 	q_mix = qtot * x
