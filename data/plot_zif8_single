@@ -1,0 +1,31 @@
+# Plot single component adsorption isotherm of methane and ethane in ZIF-8 at 433 K
+set xlabel "Bulk fluid pressure, P (10^6 Pa)"
+set ylabel "Absolute loading, q (mol/kg)"
+set key left
+set format x "%0.2t"
+set xtics 5e5
+set ytics 0.4
+set yrange[0:]
+
+set style line 1 pt 5 lc rgb "#000000"
+set style line 2 pt 5 lc rgb "#FF0000"
+
+b1=0.1
+b2=0.2
+
+# pressure in [Pa]
+# loading in [mol/kg]
+q1(x)=qsat1*b1*x/(1+b1*x)
+q2(x)=qsat2*b2*x/(1+b2*x)
+
+fit q1(x) 'Results.dat-ZIF-8-433K-methane' u 1:8 via qsat1,b1
+fit q2(x) 'Results.dat-ZIF-8-433K-ethane' u 1:8 via qsat2,b2
+
+plot   'Results.dat-ZIF-8-433K-methane' u 1:8 wi po ls 1 title "methane"
+replot 'Results.dat-ZIF-8-433K-ethane' u 1:8 wi po ls 2 title "ethane"
+replot q1(x) ls 1 notitle 
+replot q2(x) ls 2 notitle
+
+set term pdfcairo enhanced solid font "Verdana,16"
+set out "singlecomponent_zif_methane_ethane_433K.pdf"
+replot

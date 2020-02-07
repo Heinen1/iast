@@ -1,0 +1,23 @@
+# plot multicomponent adsorption isotherm of binary methan/ethane mixture in ZIF-8 at 433 K 
+set xlabel "Total bulk fluid pressure, P (10^6 Pa)"
+set ylabel "Absolute loading, q (mol/kg)"
+set key left
+set format x "%0.2t"
+set xtics 5e5
+set ytics 0.4
+set yrange[0:]
+
+set style line 1 pt 5 lc rgb "#000000"
+set style line 2 pt 5 lc rgb "#FF0000"
+
+plot   'Results.dat-ZIF-8-433K-mixture' u ($1+$2):15 wi po ls 1 title "methane"
+replot 'Results.dat-ZIF-8-433K-mixture' u ($1+$2):15:16 wi er ls 1 notitle 
+replot 'Results.dat-ZIF-8-433K-mixture' u ($1+$2):17 wi po ls 2 title "ethane"
+replot 'Results.dat-ZIF-8-433K-mixture' u ($1+$2):17:18 wi er ls 2 notitle 
+
+replot '../output_iast.dat' u 1:2 wi li ls 1 title "iast" 
+replot '../output_iast.dat' u 1:3 wi li ls 2 notitle
+
+set term pdfcairo enhanced solid font "Verdana,16"
+set out "multicomponent_zif_methane_ethane_433K.pdf"
+replot
