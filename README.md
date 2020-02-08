@@ -1,7 +1,7 @@
 # IAST
 Ideal Adsorbed Solution Theory
 
-Python code for computing adsorption equilibrium of mixtures in porous materials.
+Python code for computing adsorption equilibrium of mixtures in porous materials. Currently, only the analytical integration of the Langmuir isotherm is used in calculating the spreading pressure.
 
 Installation
 ============
@@ -12,9 +12,9 @@ git clone https://github.com/Heinen1/iast.git
 Usage
 =====
 ```
-python main.py [isotherm type] [file name 1] [file name 2]
+python main.py 
 ```
-[isotherm type]: 0 = langmuir, [file name 1] and [file name 2] are output files generated using the script_adsorption_get_results.pl script from RASPA-2.0
 
+In main.py two filename have to specified (file_name1 and file_name2) that refer to the single component adsorption isotherms that are calculated using the default RASPA perl scripts. In code, the first 22 lines of these first are being skipped, and column 1 and 8 correspond to the pressure [Pa] and absolute loading [mol/kg], respectively.
 
 
