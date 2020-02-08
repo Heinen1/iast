@@ -1,55 +1,73 @@
-import sys
-import os
 import numpy as np
-from isotherms import *
-from scipy.optimize import curve_fit
-import matplotlib.pyplot as plt
 
-columnPressure = 1
-columnLoading = 8
-skipNumberOfLines = 22
+from sys import exit
+from os import path
+from isotherms import langmuirFit
+from scipy.optimize import curve_fit
+
+# The first columns contains the pressures in [Pa]
+column_pressure = 1
+# The 8th columns contains the absolute loading in [mol/kg]
+column_loading = 8
+# The first 22 lines of the RASPA output file should be skiped
+skip_n_lines = 22
+# Langmuir isotherm has 2 parameters
 number_of_isotherm_parameters = 2
 
-def fitIsothermModels(isothermType,nComponents,fileName1,fileName2):
-	coefficients = np.zeros([nComponents,number_of_isotherm_parameters])
 
-	checkIfFileExists(fileName1)
-	checkIfFileExists(fileName2)
+# Fit the RASPA calculations to an isotherm model (Langmuir only for now)
+def fitIsothermToModel(isotherm_type, *files_names):
+    coefficients = []
 
-	pressure_loading_1 = storeDataPoints(fileName1)
-	pressure_loading_2 = storeDataPoints(fileName2)
+    for file_name in files_names:
+        checkIfFileExists(file_name)
+        pressure_loading_list = getDataPoints(file_name)
+        coefficients.append(fitIsotherm(pressure_loading_list))
 
-	coefficients[0] = fitIsotherm(pressure_loading_1)
-	coefficients[1] = fitIsotherm(pressure_loading_2)
-	return coefficients
+    return coefficients
 
-def checkIfFileExists(fileName):
-	file_exists = os.path.isfile(fileName)
-	if file_exists == False:
-		print("File ",fileName," does not exist")
-		exit()
 
-def storeDataPoints(fileName):
-	i=0
-	pressureLoading = list()        
-	with open (fileName, "r") as myfile:
-		for line in myfile:
-			if i > skipNumberOfLines:
-				lineStrip = line.strip()
-				lineSplit = lineStrip.split()
-				lineSegments = [lineSplit[columnPressure-1], lineSplit[columnLoading-1]]
-				pressureLoading.append(lineSegments) 
-			i = i + 1
-	return pressureLoading 
+# If the file does not exists, kill the program
+def checkIfFileExists(file_name):
+    file_exists = path.isfile(file_name)
+    if not file_exists:
+        print("File ", file_name, " does not exist")
+        exit()
 
-def fitIsotherm(pressureLoading):
-	n = len(pressureLoading)
-	pressure = np.zeros(n) 
-	loading = np.zeros(n) 
-	for i in range(n):
-		pressure[i] = pressureLoading[i][0] 
-		loading[i] = pressureLoading[i][1] 
-	init_values = [loading[n-1], loading[1]/pressure[1]]
-	popt, pcov = curve_fit(langmuirFit, pressure, loading, p0=init_values)
-	return popt
 
+# Open the RASPA output file that contains the pressure and the loadings of
+# the single component adsorption isotherms
+def getDataPoints(file_name):
+    i = 0
+    pressure_and_loading = list()
+
+    with open(file_name, "r") as file_content:
+        for line in file_content:
+            if i > skip_n_lines:
+                pressure_and_loading.append(getPressureAndLoadingOnly(line))
+            i += 1
+
+    return pressure_and_loading
+
+
+# Remove white spaces and split the line into a list
+# Get the elements in the list that corresponds to the pressure and the loading
+def getPressureAndLoadingOnly(line):
+    line_split = line.strip().split()
+    return [line_split[column_pressure-1], line_split[column_loading-1]]
+
+
+# Convert list with pressure and loadings to a numpy array
+# Separate pressures from loadings and set initial values
+# Fit the isotherm to the datapoints using the initial values from above
+def fitIsotherm(pressure_loading_list):
+    pressure_loading_array = np.array(pressure_loading_list, dtype=float)
+    n = len(pressure_loading_list)
+
+    pressure = pressure_loading_array[:, 0]
+    loading = pressure_loading_array[:, 1]
+
+    init_values = [loading[n-1], loading[1]/pressure[1]]
+    popt, pcov = curve_fit(langmuirFit, pressure, loading, p0=init_values)
+
+    return popt
