@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.9.23)  19 JUN 2019 15:10
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.9.23)  8 FEB 2020 23:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -297,48 +297,49 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 \c@lstlisting=\count121
-LaTeX Font Info:    Try loading font information for OMS+qbk on input line 66.
-LaTeX Font Info:    No file OMSqbk.fd. on input line 66.
-
-
-LaTeX Font Warning: Font shape `OMS/qbk/m/n' undefined
-(Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textasteriskcentered' on input line 66.
 
 [1
 
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-<./../adsorption_isotherms/singlecomponent_zif_methane_ethane_433K.pdf, id=17, 
-361.35pt x 216.81pt>
-File: ./../adsorption_isotherms/singlecomponent_zif_methane_ethane_433K.pdf Gra
-phic file (type pdf)
+LaTeX Font Info:    Try loading font information for OMS+qbk on input line 69.
+LaTeX Font Info:    No file OMSqbk.fd. on input line 69.
 
-<use ./../adsorption_isotherms/singlecomponent_zif_methane_ethane_433K.pdf>
-Package pdftex.def Info: ./../adsorption_isotherms/singlecomponent_zif_methane_
-ethane_433K.pdf used on input line 102.
+
+LaTeX Font Warning: Font shape `OMS/qbk/m/n' undefined
+(Font)              using `OMS/cmsy/m/n' instead
+(Font)              for symbol `textasteriskcentered' on input line 69.
+
+[2]
+<./../data/singlecomponent_zif_methane_ethane_433K.pdf, id=20, 361.35pt x 216.8
+1pt>
+File: ./../data/singlecomponent_zif_methane_ethane_433K.pdf Graphic file (type 
+pdf)
+ <use ./../data/singlecomponent_zif_methane_ethane_433K.pdf>
+Package pdftex.def Info: ./../data/singlecomponent_zif_methane_ethane_433K.pdf 
+used on input line 107.
 (pdftex.def)             Requested size: 234.8775pt x 140.92813pt.
 
-<./../adsorption_isotherms/multicomponent_zif_methane_ethane_433K.pdf, id=18, 3
-61.35pt x 216.81pt>
-File: ./../adsorption_isotherms/multicomponent_zif_methane_ethane_433K.pdf Grap
-hic file (type pdf)
-
-<use ./../adsorption_isotherms/multicomponent_zif_methane_ethane_433K.pdf>
-Package pdftex.def Info: ./../adsorption_isotherms/multicomponent_zif_methane_e
-thane_433K.pdf used on input line 107.
+<./../data/multicomponent_zif_methane_ethane_433K.pdf, id=21, 361.35pt x 216.81
+pt>
+File: ./../data/multicomponent_zif_methane_ethane_433K.pdf Graphic file (type p
+df)
+ <use ./../data/multicomponent_zif_methane_ethane_433K.pdf>
+Package pdftex.def Info: ./../data/multicomponent_zif_methane_ethane_433K.pdf u
+sed on input line 112.
 (pdftex.def)             Requested size: 234.8775pt x 140.92813pt.
 
-Overfull \hbox (4.26pt too wide) in paragraph at lines 100--110
+Overfull \hbox (4.26pt too wide) in paragraph at lines 105--115
  []$[]$  $[]$ 
  []
 
-[2 <./../adsorption_isotherms/singlecomponent_zif_methane_ethane_433K.pdf> <./.
-./adsorption_isotherms/multicomponent_zif_methane_ethane_433K.pdf
+[3 <./../data/singlecomponent_zif_methane_ethane_433K.pdf> <./../data/multicomp
+onent_zif_methane_ethane_433K.pdf
 
-pdfTeX warning: pdflatex (file ./../adsorption_isotherms/multicomponent_zif_met
-hane_ethane_433K.pdf): PDF inclusion: multiple pdfs with page group included in
- a single page
->] (./iast.bbl) [3
+pdfTeX warning: /Library/TeX/Distributions/.DefaultTeX/Contents/Programs/texbin
+/pdflatex (file ./../data/multicomponent_zif_methane_ethane_433K.pdf): PDF incl
+usion: multiple pdfs with page group included in a single page
+>] (./iast.bbl) [4
+
 
 ] (./iast.aux)
 
@@ -346,13 +347,13 @@ LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 5307 strings out of 493117
- 77357 string characters out of 6135433
- 180897 words of memory out of 5000000
- 8705 multiletter control sequences out of 15000+600000
- 34387 words of font info for 33 fonts, out of 8000000 for 9000
+ 5322 strings out of 493117
+ 77377 string characters out of 6135433
+ 181897 words of memory out of 5000000
+ 8714 multiletter control sequences out of 15000+600000
+ 39783 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 37i,12n,40p,680b,1311s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 37i,12n,40p,682b,1642s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/tex-gyre/q-rm.enc}</usr/l
 ocal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/lo
 cal/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/loc
@@ -367,10 +368,10 @@ e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2
 exmf-dist/fonts/type1/public/tex-gyre/qbkb.pfb></usr/local/texlive/2014/texmf-d
 ist/fonts/type1/public/tex-gyre/qbkr.pfb></usr/local/texlive/2014/texmf-dist/fo
 nts/type1/public/tex-gyre/qbkri.pfb>
-Output written on iast.pdf (3 pages, 219652 bytes).
+Output written on iast.pdf (4 pages, 220699 bytes).
 PDF statistics:
- 144 PDF objects out of 1000 (max. 8388607)
- 99 compressed objects within 1 object stream
+ 148 PDF objects out of 1000 (max. 8388607)
+ 101 compressed objects within 2 object streams
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

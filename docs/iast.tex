@@ -20,9 +20,11 @@ keywordstyle=\color{blue},
 xleftmargin=2em}
 \begin{document}
 
-\begin{center}
-{\Large Numpy code for calculating multi-component adsorption isotherms using ideal adsorbed solution theory}
-\end{center}
+\title{Numpy code for calculating multi-component adsorption isotherms using ideal adsorbed solution theory}
+\author{Jurn Heinen}
+
+\maketitle
+
 \section{Computer code}
 
 Multicomponent adsorption isotherms are frequently predicted from single component isotherms using the well-known ideal adsorbed solution theory (IAST) introduced by Myers and Prausnitz.\cite{Myers1965} The advantage of IAST is also that it is able to compute mixture adsorption using any molar composition. Here, we consider a binary mixture only.
@@ -58,16 +60,17 @@ with $x_2 = 1 - x_1$ and the adsorbed-vapour phase is described by an analog of 
 with $x_i$ being the mole fraction of component $i$ in the adsorbed phase. Listing 1 shows a routine that solves  equation (\ref{eq:find_root}) for $x_1$.
 
 \begin{lstlisting}[caption={Find root of equation (\ref{eq:find_root}) and obtain $x_1$.}]
-def iast_langmuir_analytical(x,data):
-  P,y,isotherm = data[0],data[1],data[2]
-  isotherm1 = isotherm[0]
-  isotherm2 = isotherm[1]
+def iastLangmuirAnalytical(x, data):
+    P, y, isotherm = data[0], data[1], data[2]
 
-  f = isotherm1[0]*np.log(1+isotherm1[1]*y[0]*P/x)-\
-  isotherm2[0]*np.log(1+isotherm2[1]*((y[1]*P)/(1-x)))
-  return f
+    isotherm1 = isotherm[0]
+    isotherm2 = isotherm[1]
 
-f = fsolve(iast_langmuir_analytical,x0,args=data)
+    f = isotherm1[0]*np.log(1+isotherm1[1]*y[0]*P/x) - isotherm2[0]*np.log(
+                    1+isotherm2[1]*((y[1]*P)/(1 - x)))
+    return f
+   
+f = fsolve(iastLangmuirAnalytical, x0, args=data)
 x[0] = f
 x[1] = 1 - x[0]
 \end{lstlisting}
@@ -91,33 +94,29 @@ q_mix = qtot * x
 Remember that the variables $x$ and $S.y$ are numpy arrays!
 
 \section{Example: equimolar methane/ethane mixture in ZIF-8 at 433 K.}
-In the directory 'adsorption\_isotherms', you will find the input files and results of this section.
+In the directory 'data', you will find the input files and results of this section.
 
-Figure \ref{fig:single_component_isotherms} show the (a) single and (b) multi component adsorption isotherm of methane and ethane in ZIF-8 at 433 K. These isotherms are calculated using grand-canonical Monte Carlo (GCMC) simulations using the RASPA-2.0 package.\cite{Dubbeldam2013} In the next subsection the simulations details are given. For more details on calculating adsorption properties using GCMC simulations the reader is refered to \cite{Frenkel2001,Dubbeldam2013,Dubbeldam2015} The Langmuir isotherm parameters are presented in Table \ref{tab:isotherm_parameters}.
+Figure \ref{fig:single_component_isotherms} show the (a) single and (b) multi component adsorption isotherm of methane and ethane in ZIF-8 at 433 K. These adsorptions isotherms are calculated using grand-canonical Monte Carlo (GCMC) simulations\cite{Dubbeldam2013}, see subsection \ref{sec:gcmc_simulations}. The Langmuir isotherm parameters are presented in Table \ref{tab:isotherm_parameters}.
 
-\begin{figure}[h!]
+\clearpage
+
+\begin{figure}[t!]
 \centering
 \begin{subfigure}[h]{0.5\textwidth}
 \centering
-\includegraphics[width=1.0\textwidth]{./../adsorption_isotherms/singlecomponent_zif_methane_ethane_433K.pdf}
+\includegraphics[width=1.0\textwidth]{./../data/singlecomponent_zif_methane_ethane_433K.pdf}
 \subcaption{}
 \end{subfigure}~
 \begin{subfigure}[h]{0.5\textwidth}
 \centering
-\includegraphics[width=1.0\textwidth]{./../adsorption_isotherms/multicomponent_zif_methane_ethane_433K.pdf}
+\includegraphics[width=1.0\textwidth]{./../data/multicomponent_zif_methane_ethane_433K.pdf}
 \subcaption{}
 \end{subfigure}
 \caption{Adsorption isotherm of methane (black) and ethane (red) in ZIF-8 at 433 K. Data points are obtained from GCMC simulations. (a) Single component isotherm; solid lines are fitted Langmuir isotherms. (b) Multi component isotherms; solid lines are IAST predictions.}
 \label{fig:single_component_isotherms}
 \end{figure}
 
-\clearpage
-
-\subsection{Simulations details} 
-The Van der Waals cut-off radius was set to 12.0 \AA. To maintain the minimum image convention, a 2 x 2 x 2 unit cell was used with a lattice constant of $a$ = 16.991 \AA. Non-bonding interactions are described using the Lennard-Jones potentials. For the framework, these are based on the DREIDING and UFF force field (GenericMOFs in RASPA-2.0) and for the adsorbates, the TraPPE force field is used. Note that the TraPPE force field is neutral, therefore no electrostatics are considered. The number of production cycles was set to 100000 and the number of initialization cycles to 50000. These are fairly standard settings but are sufficient for this system.  
-
-
-\begin{table}[h!]
+\begin{table}[b!]
 \centering
 \caption{Langmuir isotherm parameters of methane and ethane.}
 \label{tab:isotherm_parameters}
@@ -130,6 +129,19 @@ $q_\text{sat,1}$ (mol/kg) & $b_1$ $\cdot$ 10$^{-7}$ (Pa$^{-1}$) & $q_\text{sat,2
 \bottomrule
 \end{tabular}
 \end{table}
+
+\clearpage
+
+\subsection{Grand-canonical Monte Carlo simulations for single component adsorption isotherms}
+\label{sec:gcmc_simulations} 
+Grand-canonical Monte Carlo simulations adsorbates (methane, ethane) are allowed to move between the open volumes of the crystalline unit cell of the porous material (ZIF-8) and an reservoir. After a considerable amount of insertions of the adsorbates into the unit cell, the chemical potentials of the adsorbates inside the porous material and of the reservoir are equal. The interactions of the adsorbate-adsorbate and adsorbate-porous material are calculated using force fields. These are \textit{a priori} defined interactions between the various atom types.
+
+The Van der Waals cut-off radius was set to 12.0 {\AA}. To maintain the minimum image convention, a 2 x 2 x 2 unit cell was used with a lattice constant of $a$ = 16.991 \AA. Non-bonding interactions are described using the Lennard-Jones potentials. For the framework, these are based on the DREIDING and UFF force field (GenericMOFs in RASPA-2.0) and for the adsorbates, the TraPPE force field is used. Note that the TraPPE force field is neutral, therefore no electrostatics are considered. The number of production cycles was set to 100000 and the number of initialization cycles to 50000. These are fairly standard settings but are sufficient for this system.  
+
+For more details on calculating adsorption properties using GCMC simulations the reader is refered to \cite{Frenkel2001,Dubbeldam2013,Dubbeldam2015}
+
+
+
 
 
 
