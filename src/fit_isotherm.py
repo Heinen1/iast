@@ -16,13 +16,13 @@ number_of_isotherm_parameters = 2
 
 
 # Fit the RASPA calculations to an isotherm model (Langmuir only for now)
-def fitIsothermToModel(isotherm_type, *files_names):
+def fitIsotherm(isotherm_type, *files_names):
     coefficients = []
 
     for file_name in files_names:
         checkIfFileExists(file_name)
         pressure_loading_list = getDataPoints(file_name)
-        coefficients.append(fitIsotherm(pressure_loading_list))
+        coefficients.append(doFit(pressure_loading_list))
 
     return coefficients
 
@@ -60,7 +60,7 @@ def getPressureAndLoadingOnly(line):
 # Convert list with pressure and loadings to a numpy array
 # Separate pressures from loadings and set initial values
 # Fit the isotherm to the datapoints using the initial values from above
-def fitIsotherm(pressure_loading_list):
+def doFit(pressure_loading_list):
     pressure_loading_array = np.array(pressure_loading_list, dtype=float)
     n = len(pressure_loading_list)
 

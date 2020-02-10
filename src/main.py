@@ -3,12 +3,13 @@
 #
 
 import numpy as np
+
 from collections import namedtuple
 from iast import iast
-from fit_isotherm import fitIsothermToModel
+from fit_isotherm import fitIsotherm
 
-fileName1 = "Results.dat-ZIF-8-433K-methane"
-fileName2 = "Results.dat-ZIF-8-433K-ethane"
+file_name1 = "Results.dat-ZIF-8-433K-methane"
+file_name2 = "Results.dat-ZIF-8-433K-ethane"
 
 isotherm_type = 0
 n_components = 2
@@ -16,15 +17,13 @@ y1 = 0.5
 pressure_initial = 1e5
 pressure_final = 2e6
 n_pressure_intervals = 20
-
 d_pressure = (pressure_final - pressure_initial) / (n_pressure_intervals - 1)
-isothermParameters = fitIsothermToModel(isotherm_type,
-                                        fileName1, fileName2)
+isotherm_parameters = fitIsotherm(isotherm_type, file_name1, file_name2)
 
 Parameters = namedtuple('parameter', ['pressure_initial',
-                                      'isothermParameters', 'y',
+                                      'isotherm_parameters', 'y',
                                       'n_components', 'isotherm_type'])
-S = Parameters(pressure_initial, isothermParameters, np.array([y1, 1-y1]),
+S = Parameters(pressure_initial, isotherm_parameters, np.array([y1, 1-y1]),
                n_components, isotherm_type)
 
 print("# pressure (Pa), loading 1, loading 2")

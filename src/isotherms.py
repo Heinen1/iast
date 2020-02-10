@@ -11,5 +11,16 @@ def langmuir(p, params):
     return langmuir
 
 
+# Actual Langmuir model with x= pressure, qstat = saturation capacity and
+# b = equilibrium constant.
 def langmuirFit(x, qsat, b):
     return qsat*x*b / (1 + b*x)
+
+
+# For IAST, the Langmuir devided by the pressure is integrated. For numericall
+# integrating, this should be specified explicitly.
+def langmuirNumerical(x, params):
+    qstat = params[0]
+    b = params[1]
+
+    return langmuirFit(x, qstat, b) / x
