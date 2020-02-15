@@ -42,24 +42,25 @@ with $A$ the surface area of the sorbent, $R$ the gas constant, $T$ the temperat
 %
 \begin{equation}
 	\int_0^{P_i^0}\frac{q_i}{P} {\dif P} =  q_\text{sat,i}\ln\Big({1+b_iP_i^0}\Big). 
+	\label{eq:langmuir_analytical}
 \end{equation}
 %
 For arbitrary defined isotherm models, it might be neccesary to perform the integration numerically. At equilibrium, the spreading pressures of all components are equivalent. Therefore, for a two-component system the following relation holds 
 %
 \begin{equation} 
 	q_\text{sat,1}\ln{\Big(1+b_1\frac{Py_1}{x_1}\Big)} - q_\text{sat,2}\ln{\Big(1+b_2\frac{Py_2}{1-x_1}\Big)} = 0
-	\label{eq:find_root}
+	\label{eq:find_root_analytical}
 \end{equation} 
 %
-with $x_2 = 1 - x_1$ and the adsorbed-vapour phase is described by an analog of Raoult's law 
+with $x_2 = 1 - x_1$. The adsorbed-vapour phase is described by an analog of Raoult's law 
 %
 \begin{equation}
         \frac{Py_i}{x_i} = P_i^0
 \end{equation}
 %
-with $x_i$ being the mole fraction of component $i$ in the adsorbed phase. Listing 1 shows a routine that solves  equation (\ref{eq:find_root}) for $x_1$.
+with $x_i$ being the mole fraction of component $i$ in the adsorbed phase. Listing 1 shows a routine that solves equation (\ref{eq:find_root_analytical}) for $x_1$ using the analytically expression.
 
-\begin{lstlisting}[caption={Find root of equation (\ref{eq:find_root}) and obtain $x_1$.}]
+\begin{lstlisting}[caption={Find root of equation (\ref{eq:find_root_analytical}) and obtain $x_1$ using analytical integrating of the Gibbs isotherm.}]
 def iastLangmuirAnalytical(x, data):
     P, y, isotherm = data[0], data[1], data[2]
 
@@ -75,7 +76,28 @@ x[0] = f
 x[1] = 1 - x[0]
 \end{lstlisting}
 
-The scipy function $fsolve()$ returns the root of the function $iast\_langmuir\_analytical()$. This root is $x_1$ and for a two-component mixture $x_2 = 1 - x_1$. Next, the total adsorption capacity $q_T$ is obtained from
+The scipy function $fsolve()$ returns the root of the function $iastLangmuirAnalytical()$. This root is $x_1$ and for a two-component mixture $x_2 = 1 - x_1$. Also, equation (\ref{eq:spreading_pressure}) can also be integrated numerically to obtain $x_1$ and $x_2$. Listing 2 shows this procedure using $integrate.quad()$ method from scipy.
+
+Here, the upper integration limits are unknown. Both integrals should be equal. Using $fsolve()$, the upper limit is found.
+
+\begin{lstlisting}[caption={Numerical integration of the Gibbs isotherm to obtain $x_1$ and $x_2$.}]
+def iastLangmuirNumerical(x, data):
+    P, y, isotherm = data[0], data[1], data[2]
+
+    isotherm1 = isotherm[0]
+    isotherm2 = isotherm[1]
+
+    f1, err1 = integrate.quad(langmuirNumerical, 0, y[0]*P/x,
+                              args=(isotherm1))
+    f2, err2 = integrate.quad(langmuirNumerical, 0, y[1]*P/(1-x),
+                              args=(isotherm2))
+
+    f = f1 - f2
+    return f
+\end{lstlisting}
+
+
+Next, the total adsorption capacity $q_T$ is obtained from
 %
 \begin{equation}
         \frac{1}{q_T} = \sum_{i}^N\frac{x_i}{q_i(P_i^0)}
@@ -98,9 +120,7 @@ In the directory 'data', you will find the input files and results of this secti
 
 Figure \ref{fig:single_component_isotherms} show the (a) single and (b) multi component adsorption isotherm of methane and ethane in ZIF-8 at 433 K. These adsorptions isotherms are calculated using grand-canonical Monte Carlo (GCMC) simulations\cite{Dubbeldam2013}, see subsection \ref{sec:gcmc_simulations}. The Langmuir isotherm parameters are presented in Table \ref{tab:isotherm_parameters}.
 
-\clearpage
-
-\begin{figure}[t!]
+\begin{figure}[h!]
 \centering
 \begin{subfigure}[h]{0.5\textwidth}
 \centering
@@ -116,7 +136,7 @@ Figure \ref{fig:single_component_isotherms} show the (a) single and (b) multi co
 \label{fig:single_component_isotherms}
 \end{figure}
 
-\begin{table}[b!]
+\begin{table}[h!]
 \centering
 \caption{Langmuir isotherm parameters of methane and ethane.}
 \label{tab:isotherm_parameters}

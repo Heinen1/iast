@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.9.23)  8 FEB 2020 23:02
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2014.9.23)  15 FEB 2020 13:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -301,13 +301,13 @@ e
 [1
 
 {/usr/local/texlive/2014/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
-LaTeX Font Info:    Try loading font information for OMS+qbk on input line 69.
-LaTeX Font Info:    No file OMSqbk.fd. on input line 69.
+LaTeX Font Info:    Try loading font information for OMS+qbk on input line 70.
+LaTeX Font Info:    No file OMSqbk.fd. on input line 70.
 
 
 LaTeX Font Warning: Font shape `OMS/qbk/m/n' undefined
 (Font)              using `OMS/cmsy/m/n' instead
-(Font)              for symbol `textasteriskcentered' on input line 69.
+(Font)              for symbol `textasteriskcentered' on input line 70.
 
 [2]
 <./../data/singlecomponent_zif_methane_ethane_433K.pdf, id=20, 361.35pt x 216.8
@@ -316,7 +316,7 @@ File: ./../data/singlecomponent_zif_methane_ethane_433K.pdf Graphic file (type
 pdf)
  <use ./../data/singlecomponent_zif_methane_ethane_433K.pdf>
 Package pdftex.def Info: ./../data/singlecomponent_zif_methane_ethane_433K.pdf 
-used on input line 107.
+used on input line 127.
 (pdftex.def)             Requested size: 234.8775pt x 140.92813pt.
 
 <./../data/multicomponent_zif_methane_ethane_433K.pdf, id=21, 361.35pt x 216.81
@@ -325,10 +325,10 @@ File: ./../data/multicomponent_zif_methane_ethane_433K.pdf Graphic file (type p
 df)
  <use ./../data/multicomponent_zif_methane_ethane_433K.pdf>
 Package pdftex.def Info: ./../data/multicomponent_zif_methane_ethane_433K.pdf u
-sed on input line 112.
+sed on input line 132.
 (pdftex.def)             Requested size: 234.8775pt x 140.92813pt.
 
-Overfull \hbox (4.26pt too wide) in paragraph at lines 105--115
+Overfull \hbox (4.26pt too wide) in paragraph at lines 125--135
  []$[]$  $[]$ 
  []
 
@@ -340,17 +340,16 @@ pdfTeX warning: /Library/TeX/Distributions/.DefaultTeX/Contents/Programs/texbin
 usion: multiple pdfs with page group included in a single page
 >] (./iast.bbl) [4
 
-
 ] (./iast.aux)
 
 LaTeX Font Warning: Some font shapes were not available, defaults substituted.
 
  ) 
 Here is how much of TeX's memory you used:
- 5322 strings out of 493117
- 77377 string characters out of 6135433
- 181897 words of memory out of 5000000
- 8714 multiletter control sequences out of 15000+600000
+ 5331 strings out of 493117
+ 77515 string characters out of 6135433
+ 191897 words of memory out of 5000000
+ 8723 multiletter control sequences out of 15000+600000
  39783 words of font info for 42 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  37i,12n,40p,682b,1642s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -368,7 +367,7 @@ e/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2
 exmf-dist/fonts/type1/public/tex-gyre/qbkb.pfb></usr/local/texlive/2014/texmf-d
 ist/fonts/type1/public/tex-gyre/qbkr.pfb></usr/local/texlive/2014/texmf-dist/fo
 nts/type1/public/tex-gyre/qbkri.pfb>
-Output written on iast.pdf (4 pages, 220699 bytes).
+Output written on iast.pdf (4 pages, 222004 bytes).
 PDF statistics:
  148 PDF objects out of 1000 (max. 8388607)
  101 compressed objects within 2 object streams
