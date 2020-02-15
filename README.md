@@ -3,6 +3,8 @@ Ideal Adsorbed Solution Theory
 
 Python code for computing adsorption equilibrium of mixtures in porous materials. Currently, only the analytical integration of the Langmuir isotherm is used in calculating the spreading pressure.
 
+![single component isotherm](https://github.com/Heinen1/iast/blob/master/data/singlecomponent_zif_methane_ethane_433K.pdf)
+
 Installation
 ============
 ```bash
