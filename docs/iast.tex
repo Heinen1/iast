@@ -87,13 +87,17 @@ def iastLangmuirNumerical(x, data):
     isotherm1 = isotherm[0]
     isotherm2 = isotherm[1]
 
-    f1, err1 = integrate.quad(langmuirNumerical, 0, y[0]*P/x,
-                              args=(isotherm1))
-    f2, err2 = integrate.quad(langmuirNumerical, 0, y[1]*P/(1-x),
-                              args=(isotherm2))
+    f_total = np.array([])
 
-    f = f1 - f2
-    return f
+    pi01 = (y[0] * P) / x
+    pi02 = (y[1] * P) / (1 - x)
+
+    for x1, x2 in np.nditer([pi01, pi02]):
+        f1, err1 = integrate.quad(langmuirNumerical, 0, x1, args=(isotherm1))
+        f2, err2 = integrate.quad(langmuirNumerical, 0, x2, args=(isotherm2))
+        f_total = np.append(f_total, f1 - f2)
+
+    return f_total
 \end{lstlisting}
 
 
@@ -107,13 +111,12 @@ Next, the total adsorption capacity $q_T$ is obtained from
 with $q_i={x_i}q_T$. Here, $q_i$ (not $q_i(P_i^0)$) is the actual adsorbed amount of component $i$ in the mixture. In the code, it is given as follows: 
 %
 \begin{lstlisting}[caption={Compute the mixture adsorption isotherms based on equation (\ref{eq:total_adsorbed_loading}).}]
-q = langmuir(P*(S.y/x),S.params)
+q = langmuir(pi0.T, S.isotherm_parameters)
 
-qtot = 1.0/np.sum(x/q)
-q_mix = qtot * x
+qtot = 1.0/np.sum(x.T/q, axis=1)
+q_mix = qtot*x
 \end{lstlisting}
 %
-Remember that the variables $x$ and $S.y$ are numpy arrays!
 
 \section{Example: equimolar methane/ethane mixture in ZIF-8 at 433 K.}
 In the directory 'data', you will find the input files and results of this section.
