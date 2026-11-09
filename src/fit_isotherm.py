@@ -1,72 +1,58 @@
-import numpy as np
+from __future__ import annotations
 
-from sys import exit
-from os import path
-from isotherms import langmuirFit
+from pathlib import Path
+
+import numpy as np
 from scipy.optimize import curve_fit
 
-# The first columns contains the pressures in [Pa]
-column_pressure = 1
-# The 8th columns contains the absolute loading in [mol/kg]
-column_loading = 8
-# The first 22 lines of the RASPA output file should be skiped
-skip_n_lines = 22
-# Langmuir isotherm has 2 parameters
-number_of_isotherm_parameters = 2
+try:
+    from .isotherms import langmuir_fit
+except ImportError:  # pragma: no cover - direct script execution
+    from isotherms import langmuir_fit
+
+PRESSURE_COLUMN = 0
+LOADING_COLUMN = 7
+HEADER_LINES_TO_SKIP = 22
 
 
-# Fit the RASPA calculations to an isotherm model (Langmuir only for now)
-def fitIsotherm(*files_names):
-    coefficients = list()
+def fit_isotherm(*file_names):
+    """Fit a Langmuir isotherm to each RASPA output file."""
+    coefficients = []
+    for file_name in file_names:
+        path = Path(file_name)
+        if not path.is_file():
+            raise FileNotFoundError(f"File '{file_name}' does not exist")
 
-    for file_name in files_names:
-        checkIfFileExists(file_name)
-        pressure_loading_list = getDataPoints(file_name)
-        coefficients.append(doFitIsotherm(pressure_loading_list))
-
+        pressure_loading = _read_pressure_loading_data(path)
+        coefficients.append(_fit_single_isotherm(pressure_loading))
     return coefficients
 
 
-# If the file does not exists, kill the program
-def checkIfFileExists(file_name):
-    if not path.isfile(file_name):
-        print("File ", file_name, " does not exist")
-        exit()
+def fitIsotherm(*file_names):
+    return fit_isotherm(*file_names)
 
 
-# Open the RASPA output file that contains the pressure and the loadings of
-# the single component adsorption isotherms
-def getDataPoints(file_name):
-    i = 0
-    pressure_and_loading = list()
-
-    with open(file_name, "r") as file_content:
-        for line in file_content:
-            if i > skip_n_lines:
-                pressure_and_loading.append(getPressureAndLoadingOnly(line))
-            i += 1
-
-    return pressure_and_loading
-
-
-# Remove white spaces and split the line into a list
-# Get the elements in the list that corresponds to the pressure and the loading
-def getPressureAndLoadingOnly(line):
-    line_split = line.strip().split()
-    return [line_split[column_pressure-1], line_split[column_loading-1]]
+def _read_pressure_loading_data(path: Path):
+    data = np.genfromtxt(
+        path,
+        comments="#",
+        skip_header=HEADER_LINES_TO_SKIP,
+        usecols=(PRESSURE_COLUMN, LOADING_COLUMN),
+        invalid_raise=False,
+    )
+    if data.size == 0:
+        raise ValueError(f"No valid adsorption data found in '{path}'")
+    if data.ndim == 1:
+        data = data.reshape(1, -1)
+    return data
 
 
-# Convert list with pressure and loadings to a numpy array
-# Separate pressures from loadings and set initial values
-# Fit the isotherm to the datapoints using the initial values from above
-def doFitIsotherm(pressure_loading_list):
-    pressure_loading_array = np.array(pressure_loading_list, dtype=float)
-    n = len(pressure_loading_list)
+def _fit_single_isotherm(pressure_loading):
+    pressure = pressure_loading[:, 0]
+    loading = pressure_loading[:, 1]
+    if np.any(pressure <= 0) or np.any(loading < 0):
+        raise ValueError("Pressure and loading values must be positive and finite")
 
-    pressure = pressure_loading_array[:, 0]
-    loading = pressure_loading_array[:, 1]
-
-    init_values = [loading[n-1], loading[1]/pressure[1]]
-    popt, pcov = curve_fit(langmuirFit, pressure, loading, p0=init_values)
-
-    return popt
+    initial_guess = [loading[-1], loading[1] / pressure[1]]
+    parameters, _ = curve_fit(langmuir_fit, pressure, loading, p0=initial_guess)
+    return parameters

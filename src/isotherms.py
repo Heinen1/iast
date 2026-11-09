@@ -1,25 +1,25 @@
 import numpy as np
 
 
-# Convert input parameters to numpy array.
+def langmuir_fit(x, qsat, b):
+    x = np.asarray(x, dtype=float)
+    qsat = np.asarray(qsat, dtype=float)
+    b = np.asarray(b, dtype=float)
+    return (qsat * x * b) / (1.0 + b * x)
+
+
 def langmuir(p, params):
-    np_params = np.array(params)
-
-    langmuir = langmuirFit(p, np_params[:, 0], np_params[:, 1])
-
-    return langmuir
-
-
-# Actual Langmuir model with x= pressure, qstat = saturation capacity and
-# b = equilibrium constant.
-def langmuirFit(x, qsat, b):
-    return qsat*x*b / (1 + b*x)
+    params = np.asarray(params, dtype=float)
+    if params.ndim != 2 or params.shape[1] != 2:
+        raise ValueError("Langmuir parameters must have shape (n_components, 2)")
+    return langmuir_fit(p, params[:, 0], params[:, 1])
 
 
-# For IAST, the Langmuir devided by the pressure is integrated. For numericall
-# integrating, this should be specified explicitly.
 def langmuirNumerical(x, params):
-    qstat = params[0]
-    b = params[1]
+    qstat = float(params[0])
+    b = float(params[1])
+    return langmuir_fit(x, qstat, b) / x
 
-    return langmuirFit(x, qstat, b) / x
+
+# Backwards-compatible aliases retained for the original project API.
+langmuirFit = langmuir_fit

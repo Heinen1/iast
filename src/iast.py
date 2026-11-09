@@ -1,90 +1,78 @@
+from __future__ import annotations
+
 import numpy as np
-
-from scipy.optimize import fsolve
 from scipy import integrate
-from isotherms import langmuir
-from isotherms import langmuirNumerical
+from scipy.optimize import fsolve
 
-lower_limit = 0.00001
+try:
+    from .isotherms import langmuir, langmuirNumerical
+except ImportError:  # pragma: no cover - direct script execution
+    from isotherms import langmuir, langmuirNumerical
+
+LOWER_LIMIT = 1e-5
 
 
-# Perform iast calculation. Using fsolve() to find the root of the equation.
-# For a binary mixture this is the the equiality of the integrated isotherms
-# with a unknow upper limit.
 def iast(P, S):
-    q = np.zeros([S.n_components, S.n_pressure_intervals])
-    x = np.zeros([S.n_components, S.n_pressure_intervals])
-    qtot = np.zeros(S.n_pressure_intervals)
+    """Compute the binary IAST mixture loading for each pressure point."""
+    pressure = np.asarray(P, dtype=float)
+    composition = np.asarray(S.y, dtype=float)
+    isotherm_parameters = np.asarray(S.isotherm_parameters, dtype=float)
 
-    x0 = setInitialValuesForSolver(P, S)
-    data = [P, S.y, S.isotherm_parameters]
+    if pressure.ndim != 1:
+        raise ValueError("Pressure must be a 1D array")
+    if composition.shape != (S.n_components,):
+        raise ValueError("Gas composition length must match the number of components")
+    if isotherm_parameters.shape != (S.n_components, 2):
+        raise ValueError("Isotherm parameters must have shape (n_components, 2)")
 
-    # Integrating can be done numerically or analytically for Langmuir. Use:
-    # iastLangmuirNumerical
-    # iastLangmuirAnalytical
-    f = fsolve(iastLangmuirNumerical, x0, args=data)
+    x = np.zeros((S.n_components, pressure.size))
+    x0 = setInitialValuesForSolver(pressure, S)
+    solution = fsolve(
+        iastLangmuirNumerical,
+        x0,
+        args=(pressure, composition, isotherm_parameters),
+    )
 
-    x[0, :] = f
-    x[1, :] = 1 - x[0, :]
+    x[0, :] = solution
+    x[1, :] = 1.0 - x[0, :]
 
-    pi0 = np.outer(S.y, P) / x
-
-    q = langmuir(pi0.T, S.isotherm_parameters)
-
-    qtot = 1.0/np.sum(x.T/q, axis=1)
-    q_mix = qtot*x
-
-    return q_mix
+    pi0 = np.outer(composition, pressure) / x
+    q = langmuir(pi0.T, isotherm_parameters)
+    q_total = 1.0 / np.sum(x.T / q, axis=1)
+    return q_total * x
 
 
-# The fsolver requires initial conditions. Set as initial condition,
-# the partial pressure of component 1 divided by the sum of all partial
-# pressures. If gas phase fraction is almost zero (lower limit), set the
-# initial value at that fraction to zero.
 def setInitialValuesForSolver(P, S):
-    q_guess = np.zeros([S.n_components, S.n_pressure_intervals])
-    quess = np.zeros(S.n_pressure_intervals)
-
     product = np.outer(P, S.y)
     q_guess = langmuir(product, S.isotherm_parameters)
-    quess = q_guess[:, 0]/(np.sum(q_guess, axis=1))
+    guess = q_guess[:, 0] / np.sum(q_guess, axis=1)
+    if S.y[0] < LOWER_LIMIT and S.y[1] < LOWER_LIMIT:
+        return np.zeros_like(guess)
+    return guess
 
-    return np.where(S.y[0] < lower_limit and S.y[1] < lower_limit, 0, quess)
 
-
-# Integrate the langmuir isotherm / p numerically with upper limit set as
-# p_i^0 = y_i * P / x_i, with x_i the unknown value.
-# Cannot specify list / array as upper integration limit for integrate.quad!
-def iastLangmuirNumerical(x, data):
-    P, y, isotherm = data[0], data[1], data[2]
-
+def iastLangmuirNumerical(x, pressure, composition, isotherm):
     isotherm1 = isotherm[0]
     isotherm2 = isotherm[1]
+    f_total = np.zeros_like(pressure, dtype=float)
 
-    f_total = np.zeros(len(P))
+    pi01 = (composition[0] * pressure) / x
+    pi02 = (composition[1] * pressure) / (1.0 - x)
 
-    pi01 = (y[0] * P) / x
-    pi02 = (y[1] * P) / (1 - x)
-
-    for i, pi0 in enumerate(zip(pi01, pi02)):
-        f1, err1 = integrate.quad(langmuirNumerical, 0, pi0[0],
-                                  args=(isotherm1))
-        f2, err2 = integrate.quad(langmuirNumerical, 0, pi0[1],
-                                  args=(isotherm2))
-        f_total[i] = f1 - f2
-
+    for idx, (pi0_1, pi0_2) in enumerate(zip(pi01, pi02)):
+        f1, _ = integrate.quad(langmuirNumerical, 0.0, pi0_1, args=(isotherm1,))
+        f2, _ = integrate.quad(langmuirNumerical, 0.0, pi0_2, args=(isotherm2,))
+        f_total[idx] = f1 - f2
     return f_total
 
 
-# Analystical expression for Langmuir isotherm, divided by the pressure,
-# that is used in IAST calculation.
-def iastLangmuirAnalytical(x, data):
-    P, y, isotherm = data[0], data[1], data[2]
-
+def iastLangmuirAnalytical(x, pressure, composition, isotherm):
     isotherm1 = isotherm[0]
     isotherm2 = isotherm[1]
+    return (
+        isotherm1[0] * np.log(1.0 + isotherm1[1] * composition[0] * pressure / x)
+        - isotherm2[0] * np.log(1.0 + isotherm2[1] * composition[1] * pressure / (1.0 - x))
+    )
 
-    f = isotherm1[0]*np.log(1+isotherm1[1]*y[0]*P/x) - isotherm2[0]*np.log(
-                    1+isotherm2[1]*((y[1]*P)/(1 - x)))
 
-    return f
+compute_iast = iast
