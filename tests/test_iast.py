@@ -10,6 +10,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from fit_isotherm import fit_isotherm
 from iast import iast
+from main import build_parameters
 
 
 def test_fit_isotherm_for_sample_data():
@@ -25,19 +26,13 @@ def test_fit_isotherm_for_sample_data():
 
 
 def test_iast_calculation_returns_positive_loadings():
-    pressure = np.linspace(1e5, 2e6, 20)
     parameters = fit_isotherm(
         ROOT / "src" / "Results.dat-ZIF-8-433K-methane",
         ROOT / "src" / "Results.dat-ZIF-8-433K-ethane",
     )
-
-    class SampleSystem:
-        y = np.array([0.5, 0.5])
-        n_components = 2
-        n_pressure_intervals = len(pressure)
-        isotherm_parameters = np.asarray(parameters, dtype=float)
-
-    output = iast(pressure, SampleSystem())
+    pressure, system = build_parameters(1e5, 2e6, 20, 0.5, parameters)
+    assert isinstance(system, dict)
+    output = iast(pressure, system)
 
     assert output.shape == (2, pressure.size)
     assert np.all(output > 0)

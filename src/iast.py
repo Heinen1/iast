@@ -15,17 +15,18 @@ LOWER_LIMIT = 1e-5
 def iast(P, S):
     """Compute the binary IAST mixture loading for each pressure point."""
     pressure = np.asarray(P, dtype=float)
-    composition = np.asarray(S.y, dtype=float)
-    isotherm_parameters = np.asarray(S.isotherm_parameters, dtype=float)
+    composition = np.asarray(S["y"], dtype=float)
+    n_components = S["n_components"]
+    isotherm_parameters = np.asarray(S["isotherm_parameters"], dtype=float)
 
     if pressure.ndim != 1:
         raise ValueError("Pressure must be a 1D array")
-    if composition.shape != (S.n_components,):
+    if composition.shape != (n_components,):
         raise ValueError("Gas composition length must match the number of components")
-    if isotherm_parameters.shape != (S.n_components, 2):
+    if isotherm_parameters.shape != (n_components, 2):
         raise ValueError("Isotherm parameters must have shape (n_components, 2)")
 
-    x = np.zeros((S.n_components, pressure.size))
+    x = np.zeros((n_components, pressure.size))
     x0 = setInitialValuesForSolver(pressure, S)
     solution = fsolve(
         iastLangmuirNumerical,
@@ -43,10 +44,10 @@ def iast(P, S):
 
 
 def setInitialValuesForSolver(P, S):
-    product = np.outer(P, S.y)
-    q_guess = langmuir(product, S.isotherm_parameters)
+    product = np.outer(P, S["y"])
+    q_guess = langmuir(product, S["isotherm_parameters"])
     guess = q_guess[:, 0] / np.sum(q_guess, axis=1)
-    if S.y[0] < LOWER_LIMIT and S.y[1] < LOWER_LIMIT:
+    if S["y"][0] < LOWER_LIMIT and S["y"][1] < LOWER_LIMIT:
         return np.zeros_like(guess)
     return guess
 

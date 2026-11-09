@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-from collections import namedtuple
 from pathlib import Path
 
 import numpy as np
@@ -32,20 +31,17 @@ def build_parameters(
     points: int,
     y1: float,
     isotherm_parameters,
-) -> tuple:
+) -> tuple[np.ndarray, dict]:
     y2 = 1.0 - y1
     pressure = np.linspace(pressure_start, pressure_end, points)
-    Parameters = namedtuple(
-        "Parameters",
-        ["pressure_initial", "isotherm_parameters", "y", "n_components", "n_pressure_intervals"],
-    )
-    return pressure, Parameters(
-        pressure_start,
-        np.asarray(isotherm_parameters, dtype=float),
-        np.asarray([y1, y2], dtype=float),
-        2,
-        points,
-    )
+    parameters = {
+        "pressure_initial": pressure_start,
+        "isotherm_parameters": np.asarray(isotherm_parameters, dtype=float),
+        "y": np.asarray([y1, y2], dtype=float),
+        "n_components": 2,
+        "n_pressure_intervals": points,
+    }
+    return pressure, parameters
 
 
 def _write_csv(path: Path | None, pressure: np.ndarray, loading: np.ndarray) -> None:
