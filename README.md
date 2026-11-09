@@ -1,22 +1,23 @@
 # IAST
-Ideal Adsorbed Solution Theory
 
-Python code for computing adsorption equilibrium of mixtures in porous materials. The integration of the Langmuir isotherm for the spreading pressure is calculated analytically or numerically. 
+Ideal Adsorbed Solution Theory for binary adsorption equilibria using Langmuir isotherms.
 
-Installation
-============
+## Quick start
+
 ```bash
-git clone https://github.com/Heinen1/iast.git 
+python -m pip install -r requirements.txt
+python main.py
 ```
 
-Usage
-=====
+This calculates mixture loadings for a binary system using the bundled example isotherm data in `src/Results.dat-ZIF-8-433K-methane` and `src/Results.dat-ZIF-8-433K-ethane`.
+
+## CLI usage
+
+```bash
+python main.py --y1 0.5 --pressure-start 1e5 --pressure-end 2e6 --points 20
+python main.py --file1 /path/to/adsorption-methane.dat --file2 /path/to/adsorption-ethane.dat --output results.csv
 ```
-python main.py 
-```
 
-In main.py two filename have to specified (file_name1 and file_name2) that refer to the output results of the single component adsorption isotherms that are calculated using the default RASPA perl scripts. In the code, the first 22 lines of these output files are being ignored. Column 1 and 8 correspond to the pressure [Pa] and absolute loading [mol/kg], respectively.
-
-
+The project fits each single-component isotherm to a Langmuir expression and then solves the coupled IAST equations for the mixture loading.
 
 
